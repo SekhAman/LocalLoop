@@ -924,7 +924,7 @@ async function start() {
     await mongoose.connect(process.env.MONGO_URI);
     await retryImageCleanup()
     const port = process.env.PORT || 3000;
-    app.listen(port, () => console.log(`Server listening on port http://localhost:${port}`));
+    app.listen(port, "0.0.0.0", () => console.log(`Server listening on port http://localhost:${port}`));
 }
 
 app.use((err, req, res, next) => {
