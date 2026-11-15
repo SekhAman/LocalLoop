@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#245C49" />
+    <meta name="description" content="Find trusted local services and providers near you with LocalLoop." />
+    <title>LocalLoop — Local services, close to home</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="index.html" aria-label="LocalLoop home">
+            <span class="brand-mark" aria-hidden="true">L</span>
+            <span>LocalLoop</span>
+        </a>
+
+        <form class="header-search" id="header-search-form" role="search">
+            <label class="sr-only" for="header-keyword">Service or keyword</label>
+            <input id="header-keyword" name="search" type="search" placeholder="What service do you need?" />
+            <label class="sr-only" for="header-location">Location</label>
+            <input id="header-location" name="location" type="search" placeholder="Town or area" />
+            <button class="button button-primary" type="submit">Search</button>
+        </form>
+
+        <button class="mobile-menu-button" id="mobile-menu-button" type="button" aria-expanded="false"
+            aria-controls="primary-navigation" aria-label="Open navigation">
+            <span></span><span></span><span></span>
+        </button>
+
+        <nav class="primary-navigation" id="primary-navigation" aria-label="Main navigation">
+            <a href="#browse" data-view="home">Browse services</a>
+            <a href="#favorites" data-view="favorites" data-auth-only hidden>Favorites</a>
+            <a href="#my-listings" data-view="my-listings" data-auth-only hidden>My listings</a>
+            <a href="account.html" data-signed-out>Sign in</a>
+            <a class="button button-small button-primary" href="account.html" data-signed-out>
+                Create account
+            </a>
+            <a href="account.html" data-auth-only hidden>My account</a>
+            <button class="nav-signout" id="signout-button" type="button" data-auth-only hidden>
+                Sign out
+            </button>
+        </nav>
+    </header>
+
+    <main id="app-main">
+        <section class="hero" id="home-view" data-page-view="home">
+            <div class="hero-content">
+                <p class="eyebrow">Good work, right around the corner</p>
+                <h1>Find trusted services near you</h1>
+                <p class="hero-copy">
+                    Discover independent local providers for the things you need done.
+                </p>
+
+                <form class="hero-search" id="hero-search-form" role="search">
+                    <div class="field">
+                        <label for="hero-keyword">Service or keyword</label>
+                        <input id="hero-keyword" name="search" type="search"
+                            placeholder="Cleaning, repairs, tutoring..." />
+                    </div>
+                    <div class="field">
+                        <label for="hero-location">Location</label>
+                        <input id="hero-location" name="location" type="search" placeholder="Town or area" />
+                    </div>
+                    <button class="button button-primary" type="submit">
+                        Search services
+                    </button>
+                </form>
+            </div>
+            <div class="hero-decoration" aria-hidden="true">
+                <span class="decoration-orbit orbit-one"></span>
+                <span class="decoration-orbit orbit-two"></span>
+                <span class="decoration-spark">✳</span>
+                <span class="decoration-leaf">✦</span>
+            </div>
+        </section>
+
+        <section class="category-section page-container" id="categories-section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Explore the neighborhood</p>
+                    <h2>Browse categories</h2>
+                </div>
+            </div>
+            <div class="category-list" id="category-list" aria-label="Service categories">
+                <!-- Categories are rendered by app.js -->
+            </div>
+        </section>
+
+        <section class="listings-section page-container" id="listing-section">
+            <div class="section-heading listing-heading">
+                <div>
+                    <p class="eyebrow" id="results-eyebrow">
+                        Fresh from your community
+                    </p>
+                    <h2 id="listing-section-title">Recently added</h2>
+                    <p class="section-description" id="results-summary"></p>
+                </div>
+                <button class="button button-outline" id="clear-search-button" type="button" hidden>
+                    Clear search
+                </button>
+            </div>
+
+            <div class="status-message" id="listing-status" role="status" aria-live="polite" hidden></div>
+            <div class="listing-grid" id="listing-grid">
+                <!-- Service cards are rendered by app.js -->
+            </div>
+            <div class="empty-state" id="listing-empty-state" hidden>
+                <span class="empty-state-icon" aria-hidden="true">⌕</span>
+                <h3>No services found</h3>
+                <p>Try a different service, category, or nearby location.</p>
+                <button class="button button-primary" id="empty-clear-button" type="button">
+                    Browse all services
+                </button>
+            </div>
+            <div class="pagination" id="pagination" aria-label="Service pages"></div>
+        </section>
+
+        <section class="page-container content-view" id="details-view" data-page-view="details" hidden>
+            <button class="text-button back-button" type="button" data-view="home">
+                ← Back to services
+            </button>
+            <div id="details-content">
+                <!-- Listing details are rendered by app.js -->
+            </div>
+        </section>
+
+        <section class="page-container content-view" id="my-listings-view" data-page-view="my-listings" hidden>
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Provider dashboard</p>
+                    <h1>My listings</h1>
+                    <p class="section-description">
+                        Manage the services you offer locally.
+                    </p>
+                </div>
+                <button class="button button-primary" id="add-listing-button" type="button">
+                    <span aria-hidden="true">＋</span> Add a listing
+                </button>
+            </div>
+            <div class="status-message" id="my-listings-status" role="status" aria-live="polite" hidden></div>
+            <div class="provider-list" id="my-listings-list"></div>
+            <div class="empty-state" id="my-listings-empty" hidden>
+                <span class="empty-state-icon" aria-hidden="true">✳</span>
+                <h3>You haven’t posted a service yet</h3>
+                <p>Create a listing to help local customers find you.</p>
+                <button class="button button-primary" type="button" data-action="create-listing">
+                    Create your first listing
+                </button>
+            </div>
+        </section>
+
+        <section class="page-container content-view" id="favorites-view" data-page-view="favorites" hidden>
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Your neighborhood shortlist</p>
+                    <h1>Saved services</h1>
+                    <p class="section-description">
+                        Your favorite local providers, all in one place.
+                    </p>
+                </div>
+            </div>
+            <div class="status-message" id="favorites-status" role="status" aria-live="polite" hidden></div>
+            <div class="listing-grid" id="favorites-grid"></div>
+            <div class="empty-state" id="favorites-empty" hidden>
+                <span class="empty-state-icon" aria-hidden="true">♡</span>
+                <h3>Your saved services will appear here</h3>
+                <p>Save a listing to keep it handy.</p>
+                <button class="button button-primary" type="button" data-view="home">
+                    Browse services
+                </button>
+            </div>
+        </section>
+
+        <dialog class="listing-dialog" id="listing-dialog" aria-labelledby="listing-dialog-title">
+            <div class="dialog-header">
+                <div>
+                    <p class="eyebrow">Share what you do</p>
+                    <h2 id="listing-dialog-title">Add a service</h2>
+                </div>
+                <button class="icon-button" id="close-listing-dialog" type="button" aria-label="Close form">
+                    ×
+                </button>
+            </div>
+
+            <form id="listing-form" enctype="multipart/form-data">
+                <input type="hidden" id="listing-id" name="id" />
+
+                <div class="form-grid">
+                    <div class="field field-wide">
+                        <label for="listing-name">Listing title</label>
+                        <input id="listing-name" name="name" type="text" minlength="2" maxlength="100"
+                            placeholder="e.g. Garden tidy-up" required />
+                    </div>
+
+                    <div class="field">
+                        <label for="listing-category">Category</label>
+                        <select id="listing-category" name="category" required>
+                            <option value="">Choose a category</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="listing-price">Price (₹)</label>
+                        <input id="listing-price" name="price" type="number" min="0" step="0.01" placeholder="0.00"
+                            required />
+                    </div>
+
+                    <div class="field">
+                        <label for="listing-location">Location</label>
+                        <input id="listing-location" name="location" type="text" maxlength="150"
+                            placeholder="Town or area" required />
+                    </div>
+
+                    <div class="field">
+                        <label for="listing-phone">Contact phone <span class="optional">(optional)</span></label>
+                        <input id="listing-phone" name="contactPhone" type="tel" maxlength="30"
+                            placeholder="Phone number" />
+                    </div>
+
+                    <div class="field field-wide">
+                        <label for="listing-description">Description</label>
+                        <textarea id="listing-description" name="description" rows="4" maxlength="2000"
+                            placeholder="Describe your service and what customers can expect..." required></textarea>
+                    </div>
+
+                    <div class="field field-wide">
+                        <label for="listing-image">Listing photo
+                            <span class="optional">(optional, up to 5 MB)</span></label>
+                        <input id="listing-image" name="image" type="file" accept="image/*" />
+                        <div class="image-preview" id="image-preview" hidden>
+                            <img id="image-preview-img" alt="Selected listing photo preview" />
+                            <button class="text-button" id="remove-image-button" type="button">
+                                Remove selected photo
+                            </button>
+                        </div>
+                        <p class="form-hint" id="current-image-hint" hidden>
+                            Leave the photo field empty to keep the current image.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-error" id="listing-form-error" role="alert" hidden></div>
+                <div class="dialog-actions">
+                    <button class="button button-outline" id="cancel-listing-button" type="button">
+                        Cancel
+                    </button>
+                    <button class="button button-primary" id="save-listing-button" type="submit">
+                        Save listing
+                    </button>
+                </div>
+            </form>
+        </dialog>
+
+        <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    </main>
+
+    <footer class="site-footer">
+        <a class="brand brand-footer" href="index.html">
+            <span class="brand-mark" aria-hidden="true">L</span>
+            <span>LocalLoop</span>
+        </a>
+        <p>Good work, right around the corner.</p>
+        <a href="account.html">Your account</a>
+    </footer>
+</body>
+
+</html>
