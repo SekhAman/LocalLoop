@@ -1,4 +1,4 @@
-const ACCOUNT_API_BASE = "http://localhost:3000";
+const ACCOUNT_API_BASE = "https://localloop-backend-urem.onrender.com";
 
 const accountState = {
     token: localStorage.getItem("token"),

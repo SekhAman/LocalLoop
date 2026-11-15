@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://localloop-backend-urem.onrender.com";
 
 const SERVICE_CATEGORIES = [
     "Home Services",
