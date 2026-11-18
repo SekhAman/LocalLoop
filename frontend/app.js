@@ -740,7 +740,12 @@ function readHash() {
         return;
     }
 
-    showPage("home");
+    state.search = "";
+state.location = "";
+state.category = "";
+state.page = 1;
+syncSearchInputs();
+loadServices();
 }
 
 function handleDelegatedClick(event) {
