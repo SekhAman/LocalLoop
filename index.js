@@ -20,15 +20,6 @@ app.use(cors({
 
 app.use(express.json());
 
-// dont forget to run 
-// npm init -y
-// npm install express mongoose bcryptjs jsonwebtoken dotenv cors 
-// npm install multer cloudinary {for images}
-// npm i -D nodemon (other development based packages)
-// nodemon run dev
-// and test in postman if everything is running well.
-
-
 
 if (!process.env.JWT_SECRET || !process.env.MONGO_URI) {
     throw new Error("Set JWT_SECRET and MONGO_URI in .env");

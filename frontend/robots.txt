@@ -1,0 +1,5 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://localloop-9wu6.onrender.com/sitemap.xml
