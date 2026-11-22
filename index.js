@@ -7,6 +7,8 @@ const User = require("./models/user");
 const Service = require("./models/service");
 const ImageCleanup = require("./models/ImageCleanup");
 const auth = require("./middleware/auth");
+const { serviceSchema } = require("./validation/serviceSchemas");
+const { publicContactEmailSchema } = require("./validation/accountSchemas");
 const cors = require("cors");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
@@ -15,7 +17,7 @@ const port = process.env.PORT || 3000;
 
 
 app.use(cors({
-    origin:process.env.FRONTEND_URL || "http://127.0.0.1:5000"
+    origin: process.env.FRONTEND_URL || "http://127.0.0.1:5000"
 }));
 
 app.use(express.json());
@@ -166,6 +168,7 @@ app.get("/me", auth, async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
+                publicContactEmail: user.publicContactEmail || "",
                 createdAt: user.createdAt,
             },
         });
@@ -239,11 +242,48 @@ app.patch("/me/change/password", auth, async (req, res) => {
         }
 
         user.password = await bcrypt.hash(newPassword, 10);
+        user.tokenVersion += 1;
         await user.save();
 
         return res.json({ message: "Password updated successfully" });
     } catch (err) {
         console.error("Password update error:", err.message);
+        return res.status(500).json({ message: "Server error" });
+    }
+});
+
+app.patch("/me/public-contact-email", auth, async (req, res) => {
+    try {
+        const parsed = publicContactEmailSchema.safeParse(req.body);
+
+        if (!parsed.success) {
+            return res.status(400).json({
+                message: "Enter a valid email address or leave it blank to clear it",
+                errors: parsed.error.flatten().fieldErrors,
+            });
+        }
+
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.publicContactEmail =
+            parsed.data.publicContactEmail.trim().toLowerCase() || null;
+
+        await user.save();
+
+        return res.json({
+            message: "Public contact email updated successfully",
+            user: {
+                id: user._id,
+                name: user.name,
+                publicContactEmail: user.publicContactEmail || "",
+            },
+        });
+    } catch (err) {
+        console.error("Public contact email update error:", err.message);
         return res.status(500).json({ message: "Server error" });
     }
 });
@@ -446,7 +486,7 @@ app.get("/services", async (req, res) => {
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
-                .populate("owner", "name email"),
+                .populate("owner", "name publicContactEmail"),
             Service.countDocuments(filter),
         ]);
 
@@ -472,7 +512,7 @@ app.get("/services/:id", async (req, res) => {
         }
 
         const service = await Service.findById(req.params.id)
-            .populate("owner", "name email");
+            .populate("owner", "name publicContactEmail");
 
         if (!service) {
             return res.status(404).json({ message: "Service not found" });
@@ -489,7 +529,7 @@ app.get("/me/services", auth, async (req, res) => {
     try {
         const services = await Service.find({ owner: req.user.id })
             .sort({ createdAt: -1 })
-            .populate("owner", "name email");
+            .populate("owner", "name publicContactEmail");
 
         return res.json({ services });
     } catch (err) {
@@ -511,7 +551,10 @@ app.get("/me/favorites", auth, async (req, res) => {
             .select("favorites")
             .populate({
                 path: "favorites",
-                populate: { path: "owner", select: "name email" },
+                populate: {
+                    path: "owner",
+                    select: "name publicContactEmail",
+                },
             });
 
         if (!user) {
@@ -673,7 +716,7 @@ app.post("/services", auth, uploadImage.single("image"), async (req, res) => {
             owner: req.user.id,
         });
 
-        await service.populate("owner", "name email");
+        await service.populate("owner", "name publicContactEmail");
 
         return res.status(201).json({
             message: "Service created successfully",
@@ -837,7 +880,7 @@ app.patch("/services/:id", auth, uploadImage.single("image"), async (req, res) =
             }
         }
 
-        await service.populate("owner", "name email");
+        await service.populate("owner", "name publicContactEmail");
 
         return res.json({
             message: "Service updated successfully",
