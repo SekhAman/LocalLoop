@@ -137,6 +137,24 @@
                     </button>
                 </form>
 
+                <form class="account-form settings-form" id="public-email-form">
+                    <h3>Public contact email</h3>
+                    <p>Shown to people viewing your service listings. Your sign-in email stays private.</p>
+
+                    <div class="field">
+                        <label for="public-contact-email">Contact email</label>
+                        <input id="public-contact-email" name="publicContactEmail" type="email" maxlength="254"
+                            autocomplete="email" placeholder="Leave blank to hide it">
+                    </div>
+
+                    <div class="form-error" id="public-email-error" role="alert" hidden></div>
+                    <div class="form-success" id="public-email-success" role="status" hidden></div>
+
+                    <button class="button button-outline" type="submit" id="public-email-submit">
+                        Save contact email
+                    </button>
+                </form>
+
                 <form class="account-form settings-form" id="password-form">
                     <h3>Change password</h3>
                     <div class="field">

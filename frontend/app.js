@@ -440,8 +440,8 @@ function renderDetails(service) {
                 <div class="provider-panel">
                     <h2>Provider</h2>
                     <p>${escapeHtml(owner.name || "Local provider")}</p>
-                    ${owner.email
-            ? `<p>Email: <a href="mailto:${escapeHtml(owner.email)}">${escapeHtml(owner.email)}</a></p>`
+                    ${owner.publicContactEmail
+            ? `<p>Email: <a href="mailto:${escapeHtml(owner.publicContactEmail)}">${escapeHtml(owner.publicContactEmail)}</a></p>`
             : ""}
                     ${service.contactPhone
             ? `<p>Phone: <a href="tel:${escapeHtml(service.contactPhone)}">${escapeHtml(service.contactPhone)}</a></p>`
@@ -451,7 +451,7 @@ function renderDetails(service) {
                     ${state.token
             ? `<button class="button button-primary" type="button" data-toggle-favorite="${escapeHtml(id)}">
                             ${isFavorite ? "♥ Saved to favorites" : "♡ Save to favorites"}
-                           </button>`
+                            </button>`
             : `<a class="button button-primary" href="${escapeHtml(accountUrl())}">Sign in to save</a>`}
                     ${isOwner ? `
                         <button class="button button-outline" type="button" data-edit-service="${escapeHtml(id)}">Edit listing</button>
@@ -741,11 +741,11 @@ function readHash() {
     }
 
     state.search = "";
-state.location = "";
-state.category = "";
-state.page = 1;
-syncSearchInputs();
-loadServices();
+    state.location = "";
+    state.category = "";
+    state.page = 1;
+    syncSearchInputs();
+    loadServices();
 }
 
 function handleDelegatedClick(event) {

@@ -104,6 +104,7 @@ function renderAccount(user) {
     account$("#account-view").hidden = false;
 
     account$("#profile-name").textContent = user.name || "LocalLoop member";
+    account$("#public-contact-email").value = user.publicContactEmail || "";
     account$("#profile-email").textContent = user.email || "";
     account$("#profile-avatar").textContent =
         (user.name || "L").trim().charAt(0).toUpperCase();
@@ -229,6 +230,40 @@ async function submitUsername(event) {
     }
 }
 
+async function submitPublicEmail(event) {
+    event.preventDefault();
+    showAuthError("public-email-error");
+    showAuthSuccess("public-email-success");
+
+    const button = account$("#public-email-submit");
+    const publicContactEmail = account$("#public-contact-email").value.trim();
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    try {
+        const data = await accountApi("/me/public-contact-email", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ publicContactEmail }),
+        });
+
+        accountState.user.publicContactEmail = data.user.publicContactEmail;
+        showAuthSuccess(
+            "public-email-success",
+            data.message || "Contact email updated."
+        );
+    } catch (error) {
+        showAuthError(
+            "public-email-error",
+            error.message || "Could not update contact email."
+        );
+    } finally {
+        button.disabled = false;
+        button.textContent = "Save contact email";
+    }
+}
+
 async function submitPassword(event) {
     event.preventDefault();
     showAuthError("password-error");
@@ -299,6 +334,7 @@ async function deleteAccount() {
 function initAccountPage() {
     account$("#show-login-button")?.addEventListener("click", () => switchAuthView("login"));
     account$("#show-register-button")?.addEventListener("click", () => switchAuthView("register"));
+    account$("#public-email-form")?.addEventListener("submit", submitPublicEmail);
 
     document.addEventListener("click", (event) => {
         const button = event.target.closest("[data-switch-auth]");
